@@ -12,7 +12,7 @@ Summary:	OCaml interface to Cairo
 Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo
 Name:		ocaml-cairo2
 Version:	0.5
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/Chris00/ocaml-cairo/releases
