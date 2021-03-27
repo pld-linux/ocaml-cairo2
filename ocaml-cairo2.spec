@@ -11,17 +11,17 @@
 Summary:	OCaml interface to Cairo
 Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo
 Name:		ocaml-cairo2
-Version:	0.5
-Release:	2
+Version:	0.6.2
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/Chris00/ocaml-cairo/releases
-Source0:	https://github.com/Chris00/ocaml-cairo/releases/download/%{version}/cairo2-%{version}.tar.gz
-# Source0-md5:	7081cf03e729ce05e5399d3023f267c2
+Source0:	https://github.com/Chris00/ocaml-cairo/releases/download/%{version}/cairo2-%{version}.tbz
+# Source0-md5:	2d13f7ae6c90dd29a72571e7e94dc2dd
 URL:		https://github.com/Chris00/ocaml-cairo
 BuildRequires:	ocaml >= 1:3.11.2
+BuildRequires:	ocaml-graphics-devel
 %{?with_gtk:BuildRequires:	ocaml-lablgtk2-devel}
-BuildRequires:	ocaml-x11graphics-devel
 %requires_eq	ocaml-runtime
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -42,7 +42,7 @@ Summary:	OCaml interface to Cairo - development part
 Summary(pl.UTF-8):	Interfejs OCamla do Cairo - cześć programistyczna
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-%requires_eq	ocaml
+%requires_eq ocaml
 
 %description devel
 OCaml interface to Cairo, a 2D vector graphics library.
@@ -95,80 +95,140 @@ Interfejs OCamla do biblioteki Cairo z renderowaniem na płótnie Gtk.
 Pakiet ten zawiera pliki niezbędne do tworzenia programów używających
 biblioteki Cairo.
 
+%package pango
+Summary:	OCaml interface to Cairo - Pango text rendering
+Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo - rendering na tekstu Pango
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	ocaml-lablgtk2
+
+%description pango
+OCaml interface to Cairo with Pango text rendering.
+
+This package contains files needed to run bytecode executables using
+Pango-Gtk library.
+
+%description pango -l pl.UTF-8
+Interfejs OCamla do biblioteki Cairo z renderowaniem tekstu Pango.
+
+Ten pakiet zawiera binaria potrzebne do uruchamiania programów
+używających biblioteki Pango-Gtk.
+
+%package pango-devel
+Summary:	OCaml interface toa Cairo with Pango - development part
+Summary(pl.UTF-8):	Interfejs OCamla do Cairo z Pango - cześć programistyczna
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-pango = %{version}-%{release}
+Requires:	ocaml-lablgtk2-devel
+
+%description pango-devel
+OCaml interface to Cairo with Pango text rendering.
+
+This package contains files needed to develop OCaml programs using
+Cairo library.
+
+%description pango-devel -l pl.UTF-8
+Interfejs OCamla do biblioteki Cairo z renderowaniem tekstu Pango.
+
+Pakiet ten zawiera pliki niezbędne do tworzenia programów używających
+biblioteki Cairo.
+
 %prep
 %setup -q -n cairo2-%{version}
 
 %build
-ocaml setup.ml -configure \
-	%{?with_gtk:--enable-lablgtk2} \
-	--enable-tests
-
-ocaml setup.ml -build
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs
 
-export OCAMLFIND_DESTDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml
-
-ocaml setup.ml -install
-
-# adjust to PLD layout
-install -d $RPM_BUILD_ROOT%{_libdir}/ocaml/site-lib/cairo2
-%{__mv} $RPM_BUILD_ROOT%{_libdir}/ocaml/cairo2/META $RPM_BUILD_ROOT%{_libdir}/ocaml/site-lib/cairo2/META
-cat >> $RPM_BUILD_ROOT%{_libdir}/ocaml/site-lib/cairo2/META <<EOF
-directory = "+cairo2"
-EOF
+dune install --destdir=$RPM_BUILD_ROOT
 
 # packaged as %doc
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/ocaml/cairo2/*.mli
-# just for developers?
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/ocaml/cairo2/*.{annot,cmt*}
-# useless with rpm
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so.owner
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS.txt README.md
-%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllcairo2_stubs.so
-%{_libdir}/ocaml/cairo2/cairo2.cma
+%doc CHANGES.md README.md
+%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllcairo_stubs.so
+%{_libdir}/ocaml/cairo2/cairo.cma
 %if %{with ocaml_opt}
-%attr(755,root,root) %{_libdir}/ocaml/cairo2/cairo2.cmxs
+%attr(755,root,root) %{_libdir}/ocaml/cairo2/cairo.cmxs
 %endif
 
 %files devel
 %defattr(644,root,root,755)
 %doc src/cairo.mli
 %dir %{_libdir}/ocaml/cairo2
+%{_libdir}/ocaml/cairo2/META
+%{_libdir}/ocaml/cairo2/cairo.cmt
+%{_libdir}/ocaml/cairo2/cairo.cmti
+%{_libdir}/ocaml/cairo2/cairo.ml
+%{_libdir}/ocaml/cairo2/cairo_ocaml.h
+%{_libdir}/ocaml/cairo2/dune-package
 %{_libdir}/ocaml/cairo2/cairo.cmi
 %if %{with ocaml_opt}
 %{_libdir}/ocaml/cairo2/cairo.cmx
-%{_libdir}/ocaml/cairo2/cairo2.a
-%{_libdir}/ocaml/cairo2/cairo2.cmxa
+%{_libdir}/ocaml/cairo2/cairo.a
+%{_libdir}/ocaml/cairo2/cairo.cmxa
 %endif
-%{_libdir}/ocaml/cairo2/libcairo2_stubs.a
-%{_libdir}/ocaml/site-lib/cairo2
+%{_libdir}/ocaml/cairo2/libcairo_stubs.a
+%{_libdir}/ocaml/cairo2/opam
 
 %if %{with gtk}
 %files gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/ocaml/stublibs/dllcairo_gtk_stubs.so
-%{_libdir}/ocaml/cairo2/cairo_gtk.cma
+%dir %{_libdir}/ocaml/cairo2-gtk
+%{_libdir}/ocaml/cairo2-gtk/META
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cma
 %if %{with ocaml_opt}
-%attr(755,root,root) %{_libdir}/ocaml/cairo2/cairo_gtk.cmxs
+%attr(755,root,root) %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmxs
 %endif
 
 %files gtk-devel
 %defattr(644,root,root,755)
-%doc src/cairo_gtk.mli
-%{_libdir}/ocaml/cairo2/cairo_gtk.cmi
+%doc gtk/cairo_gtk.mli
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmi
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmt
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmti
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.ml
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.mli
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.a
+%{_libdir}/ocaml/cairo2-gtk/dune-package
+%{_libdir}/ocaml/cairo2-gtk/opam
 %if %{with ocaml_opt}
-%{_libdir}/ocaml/cairo2/cairo_gtk.a
-%{_libdir}/ocaml/cairo2/cairo_gtk.cmx
-%{_libdir}/ocaml/cairo2/cairo_gtk.cmxa
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmx
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmxa
 %endif
-%{_libdir}/ocaml/cairo2/libcairo_gtk_stubs.a
+%{_libdir}/ocaml/cairo2-gtk/libcairo_gtk_stubs.a
 %endif
+
+%files pango
+%{_libdir}/ocaml/stublibs/dllcairo_pango_stubs.so
+%dir %{_libdir}/ocaml/cairo2-pango
+%{_libdir}/ocaml/cairo2-pango/META
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cma
+%if %{with ocaml_opt}
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmxs
+%endif
+
+%files pango-devel
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.a
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmi
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmt
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmti
+%if %{with ocaml_opt}
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmx
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmxa
+%endif
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.ml
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.mli
+%{_libdir}/ocaml/cairo2-pango/dune-package
+%{_libdir}/ocaml/cairo2-pango/opam
+%{_libdir}/ocaml/cairo2-pango/libcairo_pango_stubs.a
