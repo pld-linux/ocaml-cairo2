@@ -199,10 +199,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmti
 %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.ml
 %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.mli
-%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.a
 %{_libdir}/ocaml/cairo2-gtk/dune-package
 %{_libdir}/ocaml/cairo2-gtk/opam
 %if %{with ocaml_opt}
+%{_libdir}/ocaml/cairo2-gtk/cairo_gtk.a
 %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmx
 %{_libdir}/ocaml/cairo2-gtk/cairo_gtk.cmxa
 %endif
@@ -219,11 +219,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files pango-devel
-%{_libdir}/ocaml/cairo2-pango/cairo_pango.a
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmi
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmt
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmti
 %if %{with ocaml_opt}
+%{_libdir}/ocaml/cairo2-pango/cairo_pango.a
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmx
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmxa
 %endif
