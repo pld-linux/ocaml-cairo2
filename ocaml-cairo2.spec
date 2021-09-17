@@ -13,15 +13,17 @@ Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo
 Name:		ocaml-cairo2
 Version:	0.6.2
 Release:	1
-License:	LGPL v2+
+License:	LGPL v3+
 Group:		Libraries
 #Source0Download: https://github.com/Chris00/ocaml-cairo/releases
 Source0:	https://github.com/Chris00/ocaml-cairo/releases/download/%{version}/cairo2-%{version}.tbz
 # Source0-md5:	2d13f7ae6c90dd29a72571e7e94dc2dd
 URL:		https://github.com/Chris00/ocaml-cairo
-BuildRequires:	ocaml >= 1:3.11.2
+BuildRequires:	ocaml >= 1:4.02
+BuildRequires:	ocaml-dune
 BuildRequires:	ocaml-graphics-devel
 %{?with_gtk:BuildRequires:	ocaml-lablgtk2-devel}
+BuildRequires:	pkgconfig
 %requires_eq	ocaml-runtime
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -87,17 +89,17 @@ Requires:	ocaml-lablgtk2-devel
 OCaml interface to Cairo with Gtk canvas rendering.
 
 This package contains files needed to develop OCaml programs using
-Cairo library.
+Cairo-Gtk library.
 
 %description gtk-devel -l pl.UTF-8
 Interfejs OCamla do biblioteki Cairo z renderowaniem na płótnie Gtk.
 
 Pakiet ten zawiera pliki niezbędne do tworzenia programów używających
-biblioteki Cairo.
+biblioteki Cairo-Gtk.
 
 %package pango
 Summary:	OCaml interface to Cairo - Pango text rendering
-Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo - rendering na tekstu Pango
+Summary(pl.UTF-8):	Interfejs OCamla do biblioteki Cairo - rendering tekstu poprzez Pango
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	ocaml-lablgtk2
@@ -106,13 +108,13 @@ Requires:	ocaml-lablgtk2
 OCaml interface to Cairo with Pango text rendering.
 
 This package contains files needed to run bytecode executables using
-Pango-Gtk library.
+Cairo-Pango library.
 
 %description pango -l pl.UTF-8
 Interfejs OCamla do biblioteki Cairo z renderowaniem tekstu Pango.
 
 Ten pakiet zawiera binaria potrzebne do uruchamiania programów
-używających biblioteki Pango-Gtk.
+używających biblioteki Cairo-Pango.
 
 %package pango-devel
 Summary:	OCaml interface toa Cairo with Pango - development part
@@ -126,13 +128,13 @@ Requires:	ocaml-lablgtk2-devel
 OCaml interface to Cairo with Pango text rendering.
 
 This package contains files needed to develop OCaml programs using
-Cairo library.
+Cairo-Pango library.
 
 %description pango-devel -l pl.UTF-8
 Interfejs OCamla do biblioteki Cairo z renderowaniem tekstu Pango.
 
 Pakiet ten zawiera pliki niezbędne do tworzenia programów używających
-biblioteki Cairo.
+biblioteki Cairo-Pango.
 
 %prep
 %setup -q -n cairo2-%{version}
@@ -148,6 +150,7 @@ dune install --destdir=$RPM_BUILD_ROOT
 
 # packaged as %doc
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/ocaml/cairo2/*.mli
+%{__rm} -r $RPM_BUILD_ROOT%{_prefix}/doc/cairo2{,-gtk,-pango}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -210,15 +213,17 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files pango
-%{_libdir}/ocaml/stublibs/dllcairo_pango_stubs.so
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllcairo_pango_stubs.so
 %dir %{_libdir}/ocaml/cairo2-pango
 %{_libdir}/ocaml/cairo2-pango/META
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cma
 %if %{with ocaml_opt}
-%{_libdir}/ocaml/cairo2-pango/cairo_pango.cmxs
+%attr(755,root,root) %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmxs
 %endif
 
 %files pango-devel
+%defattr(644,root,root,755)
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmi
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmt
 %{_libdir}/ocaml/cairo2-pango/cairo_pango.cmti
