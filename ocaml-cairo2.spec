@@ -41,7 +41,7 @@ używających biblioteki Cairo.
 
 %package devel
 Summary:	OCaml interface to Cairo - development part
-Summary(pl.UTF-8):	Interfejs OCamla do Cairo - cześć programistyczna
+Summary(pl.UTF-8):	Interfejs OCamla do Cairo - część programistyczna
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 %requires_eq ocaml
@@ -79,7 +79,7 @@ używających biblioteki Cairo-Gtk.
 
 %package gtk-devel
 Summary:	OCaml interface to Cairo with Gtk canvas - development part
-Summary(pl.UTF-8):	Interfejs OCamla do Cairo z płótnem Canvas - cześć programistyczna
+Summary(pl.UTF-8):	Interfejs OCamla do Cairo z płótnem Canvas - część programistyczna
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-gtk = %{version}-%{release}
@@ -118,7 +118,7 @@ używających biblioteki Cairo-Pango.
 
 %package pango-devel
 Summary:	OCaml interface toa Cairo with Pango - development part
-Summary(pl.UTF-8):	Interfejs OCamla do Cairo z Pango - cześć programistyczna
+Summary(pl.UTF-8):	Interfejs OCamla do Cairo z Pango - część programistyczna
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	%{name}-pango = %{version}-%{release}
